@@ -1,8 +1,12 @@
-# habit-tracker
+# Habit-Tracker
 
-A minimal web app to track daily habits and build consistency.
+A minimal web app to track daily habits and build consistency
 
 ---
+## Tech Stack
+- Frontend => React
+- Server => Express
+- Database => Mongodb
 
 ## ✅ Feature TODO
 
