@@ -11,5 +11,8 @@
   "scripts": {
     "dev:web": "npm run dev --workspace=web",
     "dev:server": "npm run dev --workspace=server"
+  },
+  "dependencies": {
+    "mongodb": "^7.1.1"
   }
 }
