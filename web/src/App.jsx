@@ -1,67 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Routes, Route, Navigate } from "react-router-dom";
+import GuestRoute from "./components/GuestRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
+import SigninPage from "./pages/SigninPage";
+import SignupPage from "./pages/SignupPage";
+import DashboardPage from "./pages/DashboardPage";
 
 function App() {
-  
-
   return (
-    <div className="page">
+    <Routes>
+      {/* Guest-only routes — redirect to dashboard if already logged in */}
+      <Route element={<GuestRoute />}>
+        <Route path="/signin" element={<SigninPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+      </Route>
 
-      <div className='main-container'>
+      {/* Protected routes — redirect to signin if not logged in */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<DashboardPage />} />
+      </Route>
 
-        <div className='card'>
-        
-
-          <div className='nav-bar'>
-            <button className='nav-btn'>Home</button>
-            <button className='nav-btn'>Progress</button>
-            <button className='nav-btn'>About</button>
-            <button className='nav-btn'>Login</button>
-
-          </div>
-
-          <div className='hero-content'>
-            <span className="badge">New • A calmer way to build habits</span>
-
-            <h1 className='nav-title'>HABIT TRACKER</h1>
-            <h2 className='nav-subtitle'>Track your habits and achieve your goals</h2>
-
-            <div className="cta">
-              <button className="btn primary">Start Your Journey</button>
-              <button className="btn secondary">View Dashboard</button>
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <div className="fade-section">
-        <div className="about">
-          <h2>How it works</h2>
-          <p>
-          Build habits with small consistent steps. Track progress, stay motivated,
-          and improve daily with a simple system designed for real growth.
-          </p>
-        </div>
-      </div>
-
-      <div className="footer">
-        <p>© 2026 Habit Tracker</p>
-        <div className="footer-nav">
-          <span>Home</span>
-          <span>About</span>
-          <span>Contact</span>
-        </div>
-      </div>
-
-
-    </div>
-  )
+      {/* Catch-all: redirect to dashboard (which itself redirects to signin if needed) */}
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
