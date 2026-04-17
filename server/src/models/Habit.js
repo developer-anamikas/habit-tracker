@@ -32,6 +32,10 @@ const habitSchema = new mongoose.Schema(
       default: "",
       maxlength: [500, "Goal cannot exceed 500 characters"],
     },
+    completions: {
+      type: [String],
+      default: [],
+    },
   },
   { timestamps: true }
 );

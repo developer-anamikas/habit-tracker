@@ -57,5 +57,15 @@ export function useHabits() {
     setHabits((prev) => prev.filter((h) => h._id !== id));
   }
 
-  return { habits, isLoading, error, createHabit, updateHabit, deleteHabit };
+  async function toggleCompletion(id) {
+    const updated = await apiRequest(`/api/habits/${id}/complete`, {
+      method: "PATCH",
+      token,
+    });
+
+    setHabits((prev) => prev.map((h) => (h._id === id ? updated : h)));
+    return updated;
+  }
+
+  return { habits, isLoading, error, createHabit, updateHabit, deleteHabit, toggleCompletion };
 }

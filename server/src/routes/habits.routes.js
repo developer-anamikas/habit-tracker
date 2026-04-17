@@ -93,4 +93,28 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// PATCH /api/habits/:id/complete — toggle today's completion
+router.patch("/:id/complete", async (req, res) => {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+    const habit = await Habit.findOne({ _id: req.params.id, userId: req.userId });
+
+    if (!habit) {
+      return res.status(404).json({ error: "Habit not found" });
+    }
+
+    const index = habit.completions.indexOf(today);
+    if (index === -1) {
+      habit.completions.push(today);
+    } else {
+      habit.completions.splice(index, 1);
+    }
+
+    await habit.save();
+    res.json(habit);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to toggle completion" });
+  }
+});
+
 export default router;

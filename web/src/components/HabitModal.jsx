@@ -8,7 +8,6 @@ export default function HabitModal({ habit, onSave, onClose }) {
   const [goal, setGoal] = useState("");
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-
   const isEditing = Boolean(habit);
 
   useEffect(() => {
@@ -28,12 +27,7 @@ export default function HabitModal({ habit, onSave, onClose }) {
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
-
-    if (!name.trim()) {
-      setError("Name is required");
-      return;
-    }
-
+    if (!name.trim()) { setError("Name is required"); return; }
     setIsSaving(true);
     try {
       await onSave({ name: name.trim(), schedule, goal: goal.trim() });
@@ -47,119 +41,61 @@ export default function HabitModal({ habit, onSave, onClose }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-[2px]">
-      <div className="w-full max-w-md mx-4 bg-white rounded-xl border border-gray-200/80 shadow-xl shadow-gray-200/50 animate-[fadeIn_0.15s_ease-out]">
-        {/* Header */}
+      <div className="w-full max-w-md mx-4 bg-white rounded-2xl border border-surface-200 shadow-xl">
         <div className="px-6 pt-6 pb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50">
-              <svg className="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                {isEditing ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Z" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                )}
-              </svg>
-            </div>
-            <h2 className="text-[16px] font-semibold text-gray-800">
-              {isEditing ? "Edit Habit" : "New Habit"}
-            </h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="cursor-pointer p-1.5 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-          >
+          <h2 className="text-[16px] font-semibold text-surface-800">
+            {isEditing ? "Edit Habit" : "New Habit"}
+          </h2>
+          <button onClick={onClose} className="cursor-pointer p-1.5 rounded-lg text-surface-400 hover:text-surface-600 hover:bg-surface-100 transition-colors" aria-label="Close">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4">
           {error && (
-            <p className="text-[13px] text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2.5 flex items-center gap-2">
-              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-              </svg>
-              {error}
-            </p>
+            <p className="text-[13px] text-danger-500 bg-danger-400/10 border border-danger-400/20 rounded-xl px-3 py-2.5">{error}</p>
           )}
 
           <div>
-            <label htmlFor="habit-name" className="block text-[13px] font-medium text-gray-600 mb-1.5">
-              Habit name
-            </label>
-            <input
-              id="habit-name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Morning run"
-              className="w-full text-[13px] border border-gray-200 rounded-lg px-3.5 py-2.5 text-gray-800 placeholder-gray-350 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-50 transition-all"
-              autoFocus
-            />
+            <label htmlFor="habit-name" className="block text-[13px] font-medium text-surface-600 mb-1.5">Habit name</label>
+            <input id="habit-name" type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Morning run"
+              className="w-full text-[13px] border border-surface-200 rounded-xl px-3.5 py-2.5 text-surface-800 placeholder-surface-400 outline-none focus:border-accent-400 focus:ring-2 focus:ring-accent-100 transition-all" autoFocus />
           </div>
 
-          <SchedulePicker schedule={schedule} onToggle={toggleDay} />
+          <div>
+            <span className="block text-[13px] font-medium text-surface-600 mb-2">Schedule</span>
+            <div className="flex gap-1.5">
+              {WEEKDAYS.map((day) => (
+                <button key={day} type="button" onClick={() => toggleDay(day)}
+                  className={`cursor-pointer flex-1 text-[12px] py-1.5 rounded-lg transition-all ${
+                    schedule.includes(day)
+                      ? "bg-accent-500 text-white shadow-sm shadow-accent-200"
+                      : "border border-surface-200 text-surface-500 hover:border-surface-300 hover:bg-surface-50"
+                  }`}>
+                  {day}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div>
-            <label htmlFor="habit-goal" className="block text-[13px] font-medium text-gray-600 mb-1.5">
-              Goal <span className="text-gray-400 font-normal">(optional)</span>
+            <label htmlFor="habit-goal" className="block text-[13px] font-medium text-surface-600 mb-1.5">
+              Goal <span className="text-surface-400 font-normal">(optional)</span>
             </label>
-            <textarea
-              id="habit-goal"
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-              placeholder="e.g. Run 5km every session"
-              rows={2}
-              className="w-full text-[13px] border border-gray-200 rounded-lg px-3.5 py-2.5 text-gray-800 placeholder-gray-350 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-50 transition-all resize-none"
-            />
+            <textarea id="habit-goal" value={goal} onChange={(e) => setGoal(e.target.value)} placeholder="e.g. Run 5km every session" rows={2}
+              className="w-full text-[13px] border border-surface-200 rounded-xl px-3.5 py-2.5 text-surface-800 placeholder-surface-400 outline-none focus:border-accent-400 focus:ring-2 focus:ring-accent-100 transition-all resize-none" />
           </div>
 
           <div className="flex justify-end gap-2.5 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="cursor-pointer text-[13px] px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSaving}
-              className="cursor-pointer text-[13px] font-medium px-5 py-2 rounded-lg bg-gradient-to-b from-indigo-500 to-indigo-600 text-white shadow-sm shadow-indigo-200 hover:from-indigo-600 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-            >
+            <button type="button" onClick={onClose} className="cursor-pointer text-[13px] px-4 py-2 rounded-xl border border-surface-200 text-surface-600 hover:bg-surface-50 transition-all">Cancel</button>
+            <button type="submit" disabled={isSaving}
+              className="cursor-pointer text-[13px] font-medium px-5 py-2 rounded-xl bg-accent-500 text-white shadow-sm shadow-accent-200 hover:bg-accent-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
               {isSaving ? "Saving…" : isEditing ? "Save Changes" : "Create Habit"}
             </button>
           </div>
         </form>
-      </div>
-    </div>
-  );
-}
-
-function SchedulePicker({ schedule, onToggle }) {
-  return (
-    <div>
-      <span className="block text-[13px] font-medium text-gray-600 mb-2">Schedule</span>
-      <div className="flex gap-1.5">
-        {WEEKDAYS.map((day) => {
-          const active = schedule.includes(day);
-          return (
-            <button
-              key={day}
-              type="button"
-              onClick={() => onToggle(day)}
-              className={`cursor-pointer flex-1 text-[12px] py-1.5 rounded-lg transition-all ${
-                active
-                  ? "bg-gradient-to-b from-indigo-500 to-indigo-600 text-white shadow-sm shadow-indigo-200"
-                  : "border border-gray-200 text-gray-500 hover:border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              {day}
-            </button>
-          );
-        })}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import GuestRoute from "./components/GuestRoute";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AppLayout from "./components/AppLayout";
 import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -15,13 +16,15 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
       </Route>
 
-      {/* Protected routes — redirect to signin if not logged in */}
+      {/* Protected routes — rendered inside AppLayout (sidebar + topnav) */}
       <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/habits" element={<Habits />} />
+        <Route element={<AppLayout />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/habits" element={<Habits />} />
+        </Route>
       </Route>
 
-      {/* Catch-all: redirect to dashboard (which itself redirects to signin if needed) */}
+      {/* Catch-all */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
