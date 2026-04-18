@@ -21,7 +21,7 @@ export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
         </div>
         <div className="flex items-center gap-0.5">
           {todayScheduled && (
-            <button type="button" onClick={() => onToggleToday(habit._id)} title={doneToday ? "Unmark today" : "Mark today as done"} aria-label={doneToday ? "Unmark today" : "Mark today as done"} className={`cursor-pointer rounded-lg p-1.5 transition-colors ${doneToday ? "text-white" : "text-gray-400 hover:text-green-500"}`}>
+            <button type="button" onClick={() => !doneToday && onToggleToday(habit._id)} disabled={doneToday} title={doneToday ? "Completed today" : "Mark today as done"} aria-label={doneToday ? "Completed today" : "Mark today as done"} className={`rounded-lg p-1.5 transition-colors ${doneToday ? "cursor-default text-white" : "cursor-pointer text-gray-400 hover:text-green-500"}`}>
               <span className={`flex h-7 w-7 items-center justify-center rounded-full border transition-colors ${doneToday ? "border-green-500 bg-green-500 text-white" : "border-gray-300 bg-transparent text-gray-400 hover:border-green-500 hover:text-green-500"}`}>
                 <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
               </span>
