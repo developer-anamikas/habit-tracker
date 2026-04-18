@@ -27,10 +27,10 @@ Features planned for the app are listed below; check boxes track progress.
 
 ### 📝 Habit Management
 
-* [ ] Create habit
-* [ ] View all habits
-* [ ] Edit habit
-* [ ] Delete habit
+* [x] Create habit
+* [x] View all habits
+* [x] Edit habit
+* [x] Delete habit
 
 ### ✅ Daily Tracking
 
