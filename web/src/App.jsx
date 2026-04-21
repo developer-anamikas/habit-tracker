@@ -6,6 +6,7 @@ import SigninPage from "./pages/SigninPage";
 import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import Habits from "./pages/Habits";
+import AnalyticsPage from "./pages/AnalyticsPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/habits" element={<Habits />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
         </Route>
       </Route>
 
