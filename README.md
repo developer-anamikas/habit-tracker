@@ -47,8 +47,8 @@ Features planned for the app are listed below; check boxes track progress.
 ### 🎨 Optional Enhancements
 
 * [ ] Dark / Light mode
-* [ ] Filter habits
-* [ ] Sort habits
+* [x] Filter habits
+* [x] Sort habits
 * [x] Dashboard summary
 * [ ] Calendar view
 * [ ] Notifications / reminders
