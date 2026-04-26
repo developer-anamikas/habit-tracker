@@ -1,15 +1,30 @@
 import { Router } from "express";
 import Habit from "../models/Habit.js";
+import { validateFilterSort, filterAndSort } from "../utils/filterSort.js";
 
 const router = Router();
 
 // GET /api/habits - list all habits for the authenticated user
+// Query params: status (all, completed, pending), sortBy (default, name, streak, lastCompleted)
 router.get("/", async (req, res) => {
   try {
+    const { status = 'all', sortBy = 'default' } = req.query;
+
+    // Validate query parameters
+    const validation = validateFilterSort({ status, sortBy });
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
+    }
+
+    // Fetch all habits for the user (default sorted by createdAt desc)
     const habits = await Habit.find({ userId: req.userId }).sort({
       createdAt: -1,
     });
-    res.json(habits);
+
+    // Apply filtering and sorting
+    const filtered = filterAndSort(habits, { status, sortBy });
+
+    res.json(filtered);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch habits" });
   }

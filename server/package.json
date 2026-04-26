@@ -4,7 +4,8 @@
   "description": "basic express server",
   "type": "module",
   "scripts": {
-    "dev": "node src/index.js"
+    "dev": "node src/index.js",
+    "test": "node src/utils/filterSort.test.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

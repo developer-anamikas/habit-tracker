@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { apiRequest } from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 
-export function useHabits() {
+export function useHabits(filters = { status: 'all', sortBy: 'default' }) {
   const { token } = useAuth();
   const [habits, setHabits] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,14 +13,19 @@ export function useHabits() {
     setError(null);
 
     try {
-      const data = await apiRequest("/api/habits", { token });
+      const queryParams = new URLSearchParams();
+      if (filters.status) queryParams.append('status', filters.status);
+      if (filters.sortBy) queryParams.append('sortBy', filters.sortBy);
+      
+      const url = `/api/habits${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+      const data = await apiRequest(url, { token });
       setHabits(data);
     } catch (err) {
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
-  }, [token]);
+  }, [token, filters.status, filters.sortBy]);
 
   useEffect(() => {
     fetchHabits();
