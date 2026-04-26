@@ -34,22 +34,22 @@ Features planned for the app are listed below; check boxes track progress.
 
 ### ✅ Daily Tracking
 
-* [ ] Mark habit as completed
-* [ ] Prevent multiple completions per day
-* [ ] Store completion history
+* [x] Mark habit as completed
+* [x] Prevent multiple completions per day
+* [x] Store completion history
 
 ### 📊 Progress Tracking
 
-* [ ] Show current streak
-* [ ] Show last completed date
-* [ ] Calculate completion percentage
+* [x] Show current streak
+* [x] Show last completed date
+* [x] Calculate completion percentage
 
 ### 🎨 Optional Enhancements
 
 * [ ] Dark / Light mode
 * [ ] Filter habits
 * [ ] Sort habits
-* [ ] Dashboard summary
+* [x] Dashboard summary
 * [ ] Calendar view
 * [ ] Notifications / reminders
 
