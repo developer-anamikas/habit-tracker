@@ -88,27 +88,40 @@ export default function Habits() {
             <>
               <HabitFilterBar filters={filters} onChange={setFilters} />
               {visibleHabits.length === 0 && habits.length > 0 ? (
-                <div className="text-center py-12 text-gray-400">
-                  <p className="text-sm">No habits match this filter.</p>
+                <div className="rounded-2xl border border-gray-200 bg-gradient-to-b from-gray-50 to-white p-12 text-center">
+                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-amber-100">
+                    <svg className="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2.25m0 0v2.25m0-4.5v4.5m0-15a9 9 0 110 18 9 9 0 010-18z" />
+                    </svg>
+                  </div>
+                  <p className="mb-2 text-[14px] font-medium text-gray-600">No habits match this filter</p>
+                  <p className="mb-4 text-[12px] text-gray-400">Try adjusting your filters or {filters.status !== 'all' ? 'clearing them' : 'create a new habit'}.</p>
                   <button
                     onClick={() => setFilters({ status: 'all', sortBy: 'default' })}
-                    className="mt-2 text-xs text-purple-600 hover:underline"
+                    className="text-[13px] font-medium text-purple-600 transition-colors hover:text-purple-700"
                   >
                     Clear filters
                   </button>
                 </div>
               ) : (
-                <div className="grid gap-3">
-                  {visibleHabits.map((h) => (
-                    <HabitCard
-                      key={h._id}
-                      habit={h}
-                      onToggleToday={toggleCompletion}
-                      onEdit={openEdit}
-                      onDelete={setDeleteTarget}
-                    />
-                  ))}
-                </div>
+                <>
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className="text-xs text-gray-500 font-medium">
+                      Showing <span className="text-gray-700 font-semibold">{visibleHabits.length}</span> {visibleHabits.length === 1 ? 'habit' : 'habits'}
+                    </span>
+                  </div>
+                  <div className="grid gap-3 transition-all duration-300">
+                    {visibleHabits.map((h) => (
+                      <HabitCard
+                        key={h._id}
+                        habit={h}
+                        onToggleToday={toggleCompletion}
+                        onEdit={openEdit}
+                        onDelete={setDeleteTarget}
+                      />
+                    ))}
+                  </div>
+                </>
               )}
             </>
           )}
