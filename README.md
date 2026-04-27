@@ -50,7 +50,7 @@ Features planned for the app are listed below; check boxes track progress.
 * [x] Filter habits
 * [x] Sort habits
 * [x] Dashboard summary
-* [ ] Calendar view
+* [x] Calendar view
 * [ ] Notifications / reminders
 
 ## Installation & Setup
