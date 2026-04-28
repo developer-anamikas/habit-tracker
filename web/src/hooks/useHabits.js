@@ -72,5 +72,5 @@ export function useHabits(filters = { status: 'all', sortBy: 'default' }) {
     return updated;
   }
 
-  return { habits, isLoading, error, createHabit, updateHabit, deleteHabit, toggleCompletion };
+  return { habits, isLoading, error, fetchHabits, createHabit, updateHabit, deleteHabit, toggleCompletion };
 }

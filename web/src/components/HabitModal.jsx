@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import InlineError from "./InlineError";
 import { usePushNotifications } from "../hooks/usePushNotifications";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -65,7 +66,7 @@ export default function HabitModal({ habit, onSave, onClose }) {
       });
       onClose();
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Failed to save. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -86,9 +87,7 @@ export default function HabitModal({ habit, onSave, onClose }) {
         </div>
 
         <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-4">
-          {error && (
-            <p className="text-[13px] text-danger-500 bg-danger-400/10 border border-danger-400/20 rounded-xl px-3 py-2.5">{error}</p>
-          )}
+          <InlineError message={error} />
 
           <div>
             <label htmlFor="habit-name" className="block text-[13px] font-medium text-surface-600 mb-1.5">Habit name</label>
@@ -161,7 +160,7 @@ export default function HabitModal({ habit, onSave, onClose }) {
             <button type="button" onClick={onClose} className="cursor-pointer text-[13px] px-4 py-2 rounded-xl border border-surface-200 text-surface-600 hover:bg-surface-50 transition-all">Cancel</button>
             <button type="submit" disabled={isSaving}
               className="cursor-pointer text-[13px] font-medium px-5 py-2 rounded-xl bg-accent-500 text-white shadow-sm shadow-accent-200 hover:bg-accent-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-              {isSaving ? "Saving…" : isEditing ? "Save Changes" : "Create Habit"}
+              {isSaving ? "Saving..." : isEditing ? "Save Changes" : "Create Habit"}
             </button>
           </div>
         </form>
