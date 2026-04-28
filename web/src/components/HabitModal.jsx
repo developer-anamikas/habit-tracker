@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { usePushNotifications } from "../hooks/usePushNotifications";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export default function HabitModal({ habit, onSave, onClose }) {
+  const { subscribeDevice } = usePushNotifications();
   const [name, setName] = useState("");
   const [schedule, setSchedule] = useState([]);
   const [goal, setGoal] = useState("");
@@ -35,13 +37,13 @@ export default function HabitModal({ habit, onSave, onClose }) {
     const nextValue = !hasReminder;
     setHasReminder(nextValue);
 
-    if (
-      nextValue &&
-      typeof Notification !== "undefined" &&
-      Notification.permission === "default"
-    ) {
-      const permission = await Notification.requestPermission();
-      setNotificationStatus(permission);
+    if (nextValue) {
+      try {
+        const result = await subscribeDevice();
+        setNotificationStatus(result.ok ? "granted" : result.reason);
+      } catch {
+        setNotificationStatus("unavailable");
+      }
     }
   }
 
@@ -52,7 +54,15 @@ export default function HabitModal({ habit, onSave, onClose }) {
     if (hasReminder && !reminderTime) { setError("Reminder time is required"); return; }
     setIsSaving(true);
     try {
-      await onSave({ name: name.trim(), schedule, goal: goal.trim(), hasReminder, reminderTime: hasReminder ? reminderTime : "" });
+      await onSave({
+        name: name.trim(),
+        schedule,
+        goal: goal.trim(),
+        hasReminder,
+        reminderTime: hasReminder ? reminderTime : "",
+        reminderTimezone:
+          Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+      });
       onClose();
     } catch (err) {
       setError(err.message);
@@ -136,6 +146,11 @@ export default function HabitModal({ habit, onSave, onClose }) {
                 {notificationStatus === "unsupported" && (
                   <p className="mt-2 text-[12px] text-surface-400">
                     This browser does not support system notifications. In-app reminders will still appear.
+                  </p>
+                )}
+                {notificationStatus === "unavailable" && (
+                  <p className="mt-2 text-[12px] text-amber-600">
+                    Push notifications are not available yet. In-app reminders will still appear while the app is open.
                   </p>
                 )}
               </div>

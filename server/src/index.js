@@ -12,7 +12,9 @@ import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.routes.js";
 import habitRoutes from "./routes/habits.routes.js";
 import noteRoutes from "./routes/notes.routes.js";
+import pushRoutes from "./routes/push.routes.js";
 import { requireAuth } from "./middleware/auth.middleware.js";
+import { startReminderScheduler } from "./services/reminderScheduler.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,6 +31,7 @@ app.use((req, res, next) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/habits", requireAuth, habitRoutes);
 app.use("/api/notes", requireAuth, noteRoutes);
+app.use("/api/push", requireAuth, pushRoutes);
 
 app.get("/", (req, res) => {
   res.send("Habit Tracker API is running");
@@ -43,6 +46,7 @@ app.use((err, req, res, next) => {
 async function start() {
   try {
     await connectDB();
+    startReminderScheduler();
     app.listen(port, () => {
       console.log(`Server is running at http://localhost:${port}`);
     });

@@ -51,6 +51,12 @@ const habitSchema = new mongoose.Schema(
         message: "Invalid time format, must be HH:MM",
       },
     },
+    reminderTimezone: {
+      type: String,
+      trim: true,
+      default: "UTC",
+      maxlength: [100, "Reminder timezone cannot exceed 100 characters"],
+    },
   },
   { timestamps: true }
 );

@@ -76,7 +76,14 @@ router.get("/reminders", async (req, res) => {
 // POST /api/habits - create a new habit
 router.post("/", async (req, res) => {
   try {
-    const { name, schedule, goal, hasReminder, reminderTime } = req.body;
+    const {
+      name,
+      schedule,
+      goal,
+      hasReminder,
+      reminderTime,
+      reminderTimezone,
+    } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ error: "Name is required" });
@@ -92,6 +99,7 @@ router.post("/", async (req, res) => {
       name: name.trim(),
       schedule: schedule || [],
       goal: goal?.trim() || "",
+      reminderTimezone: reminderTimezone?.trim() || "UTC",
       ...reminderFields,
     });
 
@@ -109,7 +117,14 @@ router.post("/", async (req, res) => {
 // PUT /api/habits/:id - update an existing habit
 router.put("/:id", async (req, res) => {
   try {
-    const { name, schedule, goal, hasReminder, reminderTime } = req.body;
+    const {
+      name,
+      schedule,
+      goal,
+      hasReminder,
+      reminderTime,
+      reminderTimezone,
+    } = req.body;
 
     if (name !== undefined && !name.trim()) {
       return res.status(400).json({ error: "Name cannot be empty" });
@@ -140,6 +155,9 @@ router.put("/:id", async (req, res) => {
     if (name !== undefined) updates.name = name.trim();
     if (schedule !== undefined) updates.schedule = schedule;
     if (goal !== undefined) updates.goal = goal.trim();
+    if (reminderTimezone !== undefined) {
+      updates.reminderTimezone = reminderTimezone.trim() || "UTC";
+    }
     updates.hasReminder = reminderFields.hasReminder;
     updates.reminderTime = reminderFields.reminderTime;
 

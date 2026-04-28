@@ -16,17 +16,6 @@ function getLocalDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
-function showBrowserNotification(habit) {
-  if (typeof Notification === "undefined" || Notification.permission !== "granted") {
-    return;
-  }
-
-  new Notification("Time for your habit!", {
-    body: habit.name,
-    tag: `habit-reminder-${habit._id}`,
-  });
-}
-
 export default function AppLayout() {
   const { token } = useAuth();
   const location = useLocation();
@@ -73,7 +62,6 @@ export default function AppLayout() {
           const alertKey = `${habit._id}-${todayKey}-${currentTimeStr}`;
           if (!alertedRef.current.has(alertKey)) {
             setAlertQueue((prev) => [...prev, habit]);
-            showBrowserNotification(habit);
             alertedRef.current.add(alertKey);
           }
         }
