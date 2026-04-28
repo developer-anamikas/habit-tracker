@@ -8,6 +8,9 @@ export default function HabitModal({ habit, onSave, onClose }) {
   const [goal, setGoal] = useState("");
   const [hasReminder, setHasReminder] = useState(false);
   const [reminderTime, setReminderTime] = useState("");
+  const [notificationStatus, setNotificationStatus] = useState(
+    typeof Notification === "undefined" ? "unsupported" : Notification.permission
+  );
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const isEditing = Boolean(habit);
@@ -26,6 +29,20 @@ export default function HabitModal({ habit, onSave, onClose }) {
     setSchedule((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
+  }
+
+  async function handleReminderToggle() {
+    const nextValue = !hasReminder;
+    setHasReminder(nextValue);
+
+    if (
+      nextValue &&
+      typeof Notification !== "undefined" &&
+      Notification.permission === "default"
+    ) {
+      const permission = await Notification.requestPermission();
+      setNotificationStatus(permission);
+    }
   }
 
   async function handleSubmit(e) {
@@ -98,8 +115,9 @@ export default function HabitModal({ habit, onSave, onClose }) {
               <span className="text-[13px] font-medium text-surface-600">Enable reminder</span>
               <button 
                 type="button"
-                onClick={() => setHasReminder(!hasReminder)}
+                onClick={handleReminderToggle}
                 className={`cursor-pointer relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 ${hasReminder ? 'bg-accent-500' : 'bg-surface-300'}`}
+                aria-pressed={hasReminder}
               >
                 <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${hasReminder ? 'translate-x-[18px]' : 'translate-x-1'}`} />
               </button>
@@ -110,6 +128,16 @@ export default function HabitModal({ habit, onSave, onClose }) {
                 <label htmlFor="reminder-time" className="block text-[13px] font-medium text-surface-600 mb-1.5">Reminder time</label>
                 <input id="reminder-time" type="time" value={reminderTime} onChange={(e) => setReminderTime(e.target.value)}
                   className="w-full text-[14px] border border-surface-200 rounded-xl px-3.5 py-2.5 text-surface-800 placeholder-surface-400 outline-none focus:border-accent-400 focus:ring-2 focus:ring-accent-100 transition-all [&::-webkit-datetime-edit]:outline-none [&::-webkit-datetime-edit-fields-wrapper]:outline-none [&::-webkit-datetime-edit-hour-field]:focus:bg-accent-100 [&::-webkit-datetime-edit-minute-field]:focus:bg-accent-100 [&::-webkit-datetime-edit-hour-field]:focus:text-accent-700 [&::-webkit-datetime-edit-minute-field]:focus:text-accent-700" />
+                {notificationStatus === "denied" && (
+                  <p className="mt-2 text-[12px] text-amber-600">
+                    Browser notifications are blocked. In-app reminders will still appear while the app is open.
+                  </p>
+                )}
+                {notificationStatus === "unsupported" && (
+                  <p className="mt-2 text-[12px] text-surface-400">
+                    This browser does not support system notifications. In-app reminders will still appear.
+                  </p>
+                )}
               </div>
             )}
           </div>

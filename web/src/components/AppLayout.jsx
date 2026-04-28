@@ -6,6 +6,27 @@ import Sidebar from "./Sidebar";
 import TopNav from "./TopNav";
 import ReminderAlert from "./ReminderAlert";
 
+const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function getLocalDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function showBrowserNotification(habit) {
+  if (typeof Notification === "undefined" || Notification.permission !== "granted") {
+    return;
+  }
+
+  new Notification("Time for your habit!", {
+    body: habit.name,
+    tag: `habit-reminder-${habit._id}`,
+  });
+}
+
 export default function AppLayout() {
   const { token } = useAuth();
   const location = useLocation();
@@ -20,7 +41,7 @@ export default function AppLayout() {
         return;
       }
       try {
-        const data = await apiRequest("/api/habits/reminders", { token });
+        const data = await apiRequest("/api/habits/reminders?scope=all", { token });
         setReminders(data);
       } catch (err) {
         console.error("Failed to fetch reminders", err);
@@ -42,12 +63,17 @@ export default function AppLayout() {
       const currentHours = now.getHours().toString().padStart(2, "0");
       const currentMinutes = now.getMinutes().toString().padStart(2, "0");
       const currentTimeStr = `${currentHours}:${currentMinutes}`;
+      const todayName = DAY_NAMES[now.getDay()];
+      const todayKey = getLocalDateKey(now);
 
       reminders.forEach((habit) => {
-        if (habit.reminderTime === currentTimeStr) {
-          const alertKey = `${habit._id}-${currentTimeStr}`;
+        const isScheduledToday = habit.schedule?.includes(todayName);
+
+        if (isScheduledToday && habit.reminderTime === currentTimeStr) {
+          const alertKey = `${habit._id}-${todayKey}-${currentTimeStr}`;
           if (!alertedRef.current.has(alertKey)) {
             setAlertQueue((prev) => [...prev, habit]);
+            showBrowserNotification(habit);
             alertedRef.current.add(alertKey);
           }
         }

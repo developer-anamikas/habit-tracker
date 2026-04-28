@@ -64,6 +64,16 @@ function calculateStreak(completions = [], today = new Date()) {
   return streak;
 }
 
+function formatReminderTime(time) {
+  if (!time) return "";
+
+  const [hours, minutes] = time.split(":").map(Number);
+  const period = hours >= 12 ? "PM" : "AM";
+  const displayHours = hours % 12 || 12;
+
+  return `${displayHours}:${String(minutes).padStart(2, "0")} ${period}`;
+}
+
 export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
   const today = new Date();
   const schedule = habit.schedule || [];
@@ -89,7 +99,17 @@ export default function HabitCard({ habit, onToggleToday, onEdit, onDelete }) {
           <h3 className={`truncate text-[14px] font-semibold ${doneToday ? "line-through text-surface-400" : "text-surface-800"}`}>
             {habit.name}
           </h3>
-          {habit.goal && <p className="mt-0.5 truncate text-[12px] text-surface-400">{habit.goal}</p>}
+          <div className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+            {habit.goal && <p className="truncate text-[12px] text-surface-400">{habit.goal}</p>}
+            {habit.hasReminder && habit.reminderTime && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-accent-50 px-2 py-0.5 text-[11px] font-medium text-accent-600">
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                {formatReminderTime(habit.reminderTime)}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-1.5">
