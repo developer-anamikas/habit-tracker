@@ -5,6 +5,10 @@ import PushSubscription from "../models/PushSubscription.js";
 
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+function getTodayCompletionKey() {
+  return new Date().toISOString().split("T")[0];
+}
+
 function getReminderWindow(timeZone = "UTC") {
   let formatter;
 
@@ -86,16 +90,22 @@ async function sendDueReminders() {
   const habits = await Habit.find({
     hasReminder: true,
     reminderTime: { $ne: "" },
-  }).select("_id userId name reminderTime reminderTimezone schedule");
+  }).select("_id userId name reminderTime reminderTimezone schedule completions");
 
   if (habits.length === 0) {
     return;
   }
 
+  const todayCompletionKey = getTodayCompletionKey();
   const dueHabits = habits.filter((habit) => {
     const { dayName, time } = getReminderWindow(habit.reminderTimezone);
+    const completedToday = habit.completions.includes(todayCompletionKey);
 
-    return habit.reminderTime === time && habit.schedule.includes(dayName);
+    return (
+      !completedToday &&
+      habit.reminderTime === time &&
+      habit.schedule.includes(dayName)
+    );
   });
 
   for (const habit of dueHabits) {
@@ -111,7 +121,6 @@ export function startReminderScheduler() {
   if (!configureWebPush()) {
     return;
   }
-
   cron.schedule("* * * * *", () => {
     sendDueReminders().catch((err) => {
       console.error("Reminder scheduler failed:", err.message);

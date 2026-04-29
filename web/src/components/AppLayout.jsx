@@ -16,6 +16,10 @@ function getLocalDateKey(date) {
   return `${year}-${month}-${day}`;
 }
 
+function getCompletionDateKey(date) {
+  return date.toISOString().split("T")[0];
+}
+
 export default function AppLayout() {
   const { token } = useAuth();
   const location = useLocation();
@@ -54,31 +58,46 @@ export default function AppLayout() {
       const currentTimeStr = `${currentHours}:${currentMinutes}`;
       const todayName = DAY_NAMES[now.getDay()];
       const todayKey = getLocalDateKey(now);
+      const completionKey = getCompletionDateKey(now);
+      const dueReminders = [];
 
       reminders.forEach((habit) => {
         const isScheduledToday = habit.schedule?.includes(todayName);
+        const completedToday = habit.completions?.includes(completionKey);
 
-        if (isScheduledToday && habit.reminderTime === currentTimeStr) {
+        if (!completedToday && isScheduledToday && habit.reminderTime === currentTimeStr) {
           const alertKey = `${habit._id}-${todayKey}-${currentTimeStr}`;
           if (!alertedRef.current.has(alertKey)) {
-            setAlertQueue((prev) => [...prev, habit]);
+            dueReminders.push(habit);
             alertedRef.current.add(alertKey);
           }
         }
       });
+
+      if (dueReminders.length > 0) {
+        setAlertQueue((prev) => {
+          const queuedIds = new Set(prev.map((habit) => habit._id));
+          const nextReminders = dueReminders.filter(
+            (habit) => !queuedIds.has(habit._id)
+          );
+
+          return [...prev, ...nextReminders];
+        });
+      }
     }, 1000);
 
     return () => clearInterval(interval);
   }, [reminders]);
 
-  const activeAlert = alertQueue[0] || null;
-
   return (
     <div className="min-h-screen bg-surface-50">
-      {activeAlert && (
+      {alertQueue.length > 0 && (
         <ReminderAlert 
-          habitName={activeAlert.name} 
-          onClose={() => setAlertQueue((prev) => prev.slice(1))} 
+          reminders={alertQueue}
+          onClose={(habitId) =>
+            setAlertQueue((prev) => prev.filter((habit) => habit._id !== habitId))
+          }
+          onCloseAll={() => setAlertQueue([])}
         />
       )}
       <Sidebar />
