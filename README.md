@@ -3,60 +3,64 @@
 A minimal web app to track daily habits and build consistency
 
 ## Contents
+
 - [Installation](#installation--setup)
 - [How to run](#how-to-run)
 - [How to contribute](CONTRIBUTING.md)
 
 ---
+
 ## Tech Stack
+
 - Frontend: `React`
 - Server: `Express`
 - Database: `MongoDB`
 - Auth: `JWT`
 
-## ✅ Feature TODOs*
+## ✅ Feature TODOs\*
 
 Features planned for the app are listed below; check boxes track progress.
 
 ### 🔐 Authentication
 
-* [x] User signup
-* [x] User login
-* [x] JWT authentication
-* [x] Protected routes
+- [x] User signup
+- [x] User login
+- [x] JWT authentication
+- [x] Protected routes
 
 ### 📝 Habit Management
 
-* [x] Create habit
-* [x] View all habits
-* [x] Edit habit
-* [x] Delete habit
+- [x] Create habit
+- [x] View all habits
+- [x] Edit habit
+- [x] Delete habit
 
 ### ✅ Daily Tracking
 
-* [x] Mark habit as completed
-* [x] Prevent multiple completions per day
-* [x] Store completion history
+- [x] Mark habit as completed
+- [x] Prevent multiple completions per day
+- [x] Store completion history
 
 ### 📊 Progress Tracking
 
-* [x] Show current streak
-* [x] Show last completed date
-* [x] Calculate completion percentage
+- [x] Show current streak
+- [x] Show last completed date
+- [x] Calculate completion percentage
 
 ### 🎨 Optional Enhancements
 
-* [ ] Dark / Light mode
-* [x] Filter habits
-* [x] Sort habits
-* [x] Dashboard summary
-* [x] Calendar view
-* [ ] Notifications / reminders
+- [ ] Dark / Light mode
+- [x] Filter habits
+- [x] Sort habits
+- [x] Dashboard summary
+- [x] Calendar view
+- [x] Notifications / reminders
 
 ## Installation & Setup
 
 ### Requirements
-  -  Node.js: `^22.14.0`
+
+- Node.js: `^22.14.0`
 
 ```bash
 # 1. Clone the repo
@@ -69,22 +73,24 @@ npm install
 ```
 
 ## How to Run
- ```bash
- # Dev mode
- # 1. web client
- npm run dev:web
 
- # 2. server
- npm run dev:server
- ```
+```bash
+# Dev mode
+# 1. web client
+npm run dev:web
 
- ## Project structure
- ```text
- habit-tracker/
+# 2. server
+npm run dev:server
+```
+
+## Project structure
+
+```text
+habit-tracker/
 ├── web/
 ├── server/
 ├── package.json
 └── README.md
- ```
+```
 
-#### *For any query ask us on our discord channel*
+#### _For any query ask us on our discord channel_

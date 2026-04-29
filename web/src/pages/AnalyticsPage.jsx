@@ -1,6 +1,8 @@
 import { useState } from "react";
 import HabitAnalyticsCard from "../components/HabitAnalyticsCard";
 import AnalyticsRangePicker from "../components/AnalyticsRangePicker";
+import EmptyState from "../components/EmptyState";
+import ErrorMessage from "../components/ErrorMessage";
 import NotesPanel from "../components/NotesPanel";
 import { useHabits } from "../hooks/useHabits";
 import { useNotes } from "../hooks/useNotes";
@@ -64,7 +66,7 @@ function getInsightLine(range, overview) {
 }
 
 export default function AnalyticsPage() {
-  const { habits, isLoading, error } = useHabits();
+  const { habits, isLoading, error, fetchHabits } = useHabits();
   const { notes, isLoading: notesLoading, createNote, deleteNote } = useNotes();
   const todayKey = getTodayKey();
   const [rangeType, setRangeType] = useState("week");
@@ -179,21 +181,30 @@ export default function AnalyticsPage() {
       </section>
 
       {error ? (
-        <div className="rounded-2xl border border-danger-500/20 bg-danger-500/10 px-4 py-3 text-[13px] text-danger-600">
-          {error}
+        <div className="rounded-2xl border border-danger-500/20 bg-white">
+          <ErrorMessage
+            title="Failed to load analytics"
+            description="Check your connection or try loading your analytics again."
+            type="network"
+            onRetry={fetchHabits}
+          />
         </div>
       ) : null}
 
       <div key={motionKey} className="animate-analytics-fade space-y-6">
         {range.isIncomplete ? (
           <EmptyState
+            icon="analytics"
             title="Select a time range to view analytics"
             description="Choose both a start date and an end date to calculate completion insights."
           />
         ) : habits.length === 0 ? (
           <EmptyState
-            title="No habits yet - start tracking to see insights"
+            icon="analytics"
+            title="No habits to analyse"
             description="Create your first habit and this dashboard will start turning raw completion history into useful feedback."
+            actionLabel="Go to My Habits"
+            actionPath="/habits"
           />
         ) : (
           <>
@@ -232,6 +243,7 @@ export default function AnalyticsPage() {
               {!range.hasPastWindow ? (
                 <div className="mt-5">
                   <EmptyState
+                    icon="analytics"
                     title="No activity in this range"
                     description="The selected custom range is entirely in the future, so there are no valid days to measure yet."
                   />
@@ -426,13 +438,3 @@ function LegendItem({ label, className }) {
   );
 }
 
-function EmptyState({ title, description }) {
-  return (
-    <div className="rounded-[20px] bg-white px-6 py-14 text-center shadow-[0_12px_28px_rgba(42,42,61,0.06)]">
-      <h2 className="text-[18px] font-semibold text-surface-800">{title}</h2>
-      <p className="mx-auto mt-2 max-w-xl text-[13px] leading-6 text-surface-500">
-        {description}
-      </p>
-    </div>
-  );
-}

@@ -19,6 +19,11 @@ export function useHabits(filters = { status: 'all', sortBy: 'default' }) {
       
       const url = `/api/habits${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
       const data = await apiRequest(url, { token });
+
+      if (!Array.isArray(data)) {
+        throw new Error("Invalid data format");
+      }
+
       setHabits(data);
     } catch (err) {
       setError(err.message);
@@ -72,5 +77,5 @@ export function useHabits(filters = { status: 'all', sortBy: 'default' }) {
     return updated;
   }
 
-  return { habits, isLoading, error, createHabit, updateHabit, deleteHabit, toggleCompletion };
+  return { habits, isLoading, error, fetchHabits, createHabit, updateHabit, deleteHabit, toggleCompletion };
 }

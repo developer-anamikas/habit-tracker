@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import EmptyState from "../components/EmptyState";
+import ErrorMessage from "../components/ErrorMessage";
 import HabitCalendarGrid from "../components/HabitCalendarGrid";
 import MonthNav from "../components/MonthNav";
 import { useHabits } from "../hooks/useHabits";
@@ -68,7 +69,7 @@ function isFutureMonth(year, month) {
 }
 
 export default function Calendar() {
-  const { habits, isLoading, error } = useHabits();
+  const { habits, isLoading, error, fetchHabits } = useHabits();
   const now = new Date();
   const [selectedId, setSelectedId] = useState(null);
   const [year, setYear] = useState(now.getUTCFullYear());
@@ -118,7 +119,32 @@ export default function Calendar() {
     );
   }
 
-  if (habits.length === 0 && !error) return <EmptyState />;
+  if (error) {
+    return (
+      <div className="mx-auto max-w-[920px] rounded-2xl border border-danger-500/20 bg-white">
+        <ErrorMessage
+          title="Failed to load calendar data"
+          description="Check your connection or try loading the calendar again."
+          type="network"
+          onRetry={fetchHabits}
+        />
+      </div>
+    );
+  }
+
+  if (habits.length === 0) {
+    return (
+      <div className="mx-auto max-w-xl rounded-[24px] bg-white shadow-[0_14px_32px_rgba(42,42,61,0.08)]">
+        <EmptyState
+          icon="calendar"
+          title="Nothing to show yet"
+          description="Add a habit with a schedule to see your completion history here."
+          actionLabel="Add a habit"
+          actionPath="/habits"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-[920px] space-y-5">
@@ -127,10 +153,6 @@ export default function Calendar() {
         <h1 className="mt-1 text-[24px] font-bold text-surface-900">Habit Calendar</h1>
         <p className="mt-1 text-[13px] text-surface-500">View completed, missed, and upcoming scheduled days for each habit.</p>
       </div>
-
-      {error ? (
-        <div className="rounded-2xl border border-danger-500/20 bg-danger-500/10 px-4 py-3 text-[13px] text-danger-600">{error}</div>
-      ) : null}
 
       <div className="flex flex-wrap gap-2">
         <button
@@ -297,14 +319,3 @@ function LegendItem({ label, markerClassName }) {
   );
 }
 
-function EmptyState() {
-  return (
-    <div className="mx-auto max-w-xl rounded-[24px] bg-white px-6 py-16 text-center shadow-[0_14px_32px_rgba(42,42,61,0.08)]">
-      <h1 className="text-[20px] font-semibold text-surface-800">No habits yet</h1>
-      <p className="mx-auto mt-2 max-w-md text-[13px] leading-6 text-surface-500">Create a habit first, then its completion calendar will appear here.</p>
-      <Link to="/habits" className="mt-5 inline-flex rounded-xl bg-accent-500 px-4 py-2.5 text-[13px] font-medium text-white transition-colors hover:bg-accent-600">
-        Add a habit
-      </Link>
-    </div>
-  );
-}
