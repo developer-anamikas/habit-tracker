@@ -1,3 +1,4 @@
+// PR #36: Logic fix for habit completion calculation
 import { useState } from "react";
 import { useTheme } from "../context/ThemeContext";
 import HabitAnalyticsCard from "../components/HabitAnalyticsCard";

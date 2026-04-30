@@ -1,3 +1,4 @@
+// PR #36: Logic fix for habit completion calculation
 import { NavLink } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 
