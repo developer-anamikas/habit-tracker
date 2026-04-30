@@ -6,11 +6,11 @@ function getTimelineClasses(day) {
   }
 
   if (day.isFuture) {
-    return "border-surface-200 bg-surface-50 text-surface-300";
+    return "border-surface-600 bg-surface-700 text-surface-500";
   }
 
   if (!day.isScheduled) {
-    return "border-surface-200 bg-white text-surface-300";
+    return "border-surface-600 bg-surface-700 text-surface-500";
   }
 
   return "border-danger-400/40 bg-danger-400/10 text-danger-500";
@@ -27,10 +27,10 @@ export default function HabitAnalyticsCard({
 
   return (
     <article
-      className={`animate-analytics-rise rounded-[22px] bg-white p-4 shadow-[0_14px_30px_rgba(42,42,61,0.08)] transition-all duration-500 ${
+      className={`animate-analytics-rise rounded-[22px] bg-surface-800 p-4 shadow-[0_14px_30px_rgba(0,0,0,0.25)] transition-all duration-500 ${
         habit.completionPercentage === null
-          ? "border border-surface-200/50 opacity-75 hover:opacity-100"
-          : "border border-transparent hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(42,42,61,0.12)]"
+          ? "border border-surface-700 opacity-75 hover:opacity-100"
+          : "border border-surface-700 hover:-translate-y-0.5 hover:shadow-[0_18px_36px_rgba(0,0,0,0.35)]"
       }`}
       style={{ animationDelay: `${index * 70}ms` }}
     >
@@ -39,12 +39,12 @@ export default function HabitAnalyticsCard({
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-surface-400">
             Habit
           </p>
-          <h3 className="mt-1 truncate text-[18px] font-semibold text-surface-800">
+          <h3 className="mt-1 truncate text-[18px] font-semibold text-surface-100">
             {habit.name}
           </h3>
-          <p className="mt-1 text-[13px] text-surface-500">{habit.scheduleLabel}</p>
+          <p className="mt-1 text-[13px] text-surface-400">{habit.scheduleLabel}</p>
           {habit.goal ? (
-            <p className="mt-1.5 line-clamp-2 text-[12px] text-surface-400">{habit.goal}</p>
+            <p className="mt-1.5 line-clamp-2 text-[12px] text-surface-500">{habit.goal}</p>
           ) : null}
         </div>
 
@@ -79,7 +79,7 @@ export default function HabitAnalyticsCard({
                 title={formatLongDate(day.dateKey)}
                 className={`group flex flex-col items-center gap-2 rounded-2xl border border-transparent px-1.5 py-2 transition ${
                   day.isToday && day.isScheduled && !day.isFuture && canToggleToday
-                    ? "cursor-pointer hover:scale-[1.02] hover:border-accent-200 hover:bg-accent-50/60 active:scale-[0.98]"
+                    ? "cursor-pointer hover:scale-[1.02] hover:border-accent-600 hover:bg-accent-900/30 active:scale-[0.98]"
                     : "cursor-default"
                 }`}
               >
@@ -119,7 +119,7 @@ export default function HabitAnalyticsCard({
       </div>
 
       <div className="mt-4">
-        <div className="mb-2 flex items-center justify-between text-[12px] text-surface-500">
+        <div className="mb-2 flex items-center justify-between text-[12px] text-surface-400">
           <span>
             {habit.totalScheduledDays === 0
               ? "-- Not in this range"
@@ -130,7 +130,7 @@ export default function HabitAnalyticsCard({
           </span>
         </div>
 
-        <div className="h-2 overflow-hidden rounded-full bg-surface-100">
+        <div className="h-2 overflow-hidden rounded-full bg-surface-700">
           <div
             className={`animate-analytics-bar h-full rounded-full ${habit.tone.barClass}`}
             style={{
