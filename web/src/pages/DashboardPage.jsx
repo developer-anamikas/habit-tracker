@@ -1,14 +1,21 @@
 import EmptyState from "../components/EmptyState";
 import ErrorMessage from "../components/ErrorMessage";
 import { useHabits } from "../hooks/useHabits";
+import { useTheme } from "../context/ThemeContext";
 
 export default function DashboardPage() {
   const { habits, isLoading, error, fetchHabits } = useHabits();
+  const { isDarkMode } = useTheme();
 
   const today = new Date().toISOString().split("T")[0];
   const totalHabits = habits.length;
   const completedToday = habits.filter((h) => (h.completions || []).includes(today)).length;
   const completionPct = totalHabits ? Math.round((completedToday / totalHabits) * 100) : 0;
+
+  const cardBg = isDarkMode ? '#1a1a2e' : 'white';
+  const cardBorder = isDarkMode ? '#2d2d4e' : '#e5e7eb';
+  const headingColor = isDarkMode ? '#e2e8f0' : '#1e293b';
+  const subColor = isDarkMode ? '#64748b' : '#9ca3af';
 
   if (isLoading) {
     return (
@@ -20,7 +27,7 @@ export default function DashboardPage() {
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-danger-500/20 bg-white">
+      <div style={{ backgroundColor: cardBg, border: `1px solid ${cardBorder}` }} className="rounded-2xl">
         <ErrorMessage
           title="Failed to load dashboard"
           description="Check your connection or try loading the dashboard again."
@@ -34,18 +41,18 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-surface-800">Dashboard</h1>
-        <p className="text-[13px] text-surface-400 mt-1">Your habits at a glance</p>
+        <h1 style={{ color: headingColor }} className="text-xl font-bold">Dashboard</h1>
+        <p style={{ color: subColor }} className="text-[13px] mt-1">Your habits at a glance</p>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <StatCard label="Total Habits" value={totalHabits} icon={TotalIcon} />
-        <StatCard label="Done Today" value={completedToday} icon={DoneIcon} />
-        <StatCard label="Completion" value={`${completionPct}%`} icon={PctIcon} />
+        <StatCard label="Total Habits" value={totalHabits} icon={TotalIcon} cardBg={cardBg} cardBorder={cardBorder} headingColor={headingColor} />
+        <StatCard label="Done Today" value={completedToday} icon={DoneIcon} cardBg={cardBg} cardBorder={cardBorder} headingColor={headingColor} />
+        <StatCard label="Completion" value={`${completionPct}%`} icon={PctIcon} cardBg={cardBg} cardBorder={cardBorder} headingColor={headingColor} />
       </div>
 
       {habits.length === 0 ? (
-        <div className="rounded-2xl border border-surface-200 bg-white">
+        <div style={{ backgroundColor: cardBg, border: `1px solid ${cardBorder}` }} className="rounded-2xl">
           <EmptyState
             icon="habits"
             title="Ready to build your routine?"
@@ -59,14 +66,14 @@ export default function DashboardPage() {
   );
 }
 
-function StatCard({ label, value, icon: Icon }) {
+function StatCard({ label, value, icon: Icon, cardBg, cardBorder, headingColor }) {
   return (
-    <div className="bg-white rounded-2xl border border-surface-200 p-4 flex items-center gap-3">
+    <div style={{ backgroundColor: cardBg, border: `1px solid ${cardBorder}` }} className="rounded-2xl p-4 flex items-center gap-3">
       <div className="w-10 h-10 rounded-xl bg-accent-50 flex items-center justify-center shrink-0">
         <Icon />
       </div>
       <div>
-        <p className="text-[20px] font-bold text-surface-800 leading-tight">{value}</p>
+        <p style={{ color: headingColor }} className="text-[20px] font-bold leading-tight">{value}</p>
         <p className="text-[11px] text-surface-400">{label}</p>
       </div>
     </div>

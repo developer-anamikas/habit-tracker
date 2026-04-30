@@ -10,32 +10,35 @@ import Habits from "./pages/Habits";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import Calendar from "./pages/Calendar";
 import SettingsPage from "./pages/SettingsPage";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
   return (
-    <ErrorBoundary>
-      <Routes>
-        {/* Guest-only routes — redirect to dashboard if already logged in */}
-        <Route element={<GuestRoute />}>
-          <Route path="/signin" element={<SigninPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-        </Route>
-
-        {/* Protected routes — rendered inside AppLayout (sidebar + topnav) */}
-        <Route element={<ProtectedRoute />}>
-          <Route element={<AppLayout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/habits" element={<Habits />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+    <ThemeProvider>
+      <ErrorBoundary>
+        <Routes>
+          {/* Guest-only routes — redirect to dashboard if already logged in */}
+          <Route element={<GuestRoute />}>
+            <Route path="/signin" element={<SigninPage />} />
+            <Route path="/signup" element={<SignupPage />} />
           </Route>
-        </Route>
 
-        {/* Catch-all */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
-      </Routes>
-    </ErrorBoundary>
+          {/* Protected routes — rendered inside AppLayout (sidebar + topnav) */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<AppLayout />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/habits" element={<Habits />} />
+              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+            </Route>
+          </Route>
+
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
 

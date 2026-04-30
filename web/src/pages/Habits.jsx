@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useHabits } from "../hooks/useHabits";
 import { useNotes } from "../hooks/useNotes";
+import { useTheme } from "../context/ThemeContext";
 import HabitCard from "../components/HabitCard";
 import HabitModal from "../components/HabitModal";
 import DeleteConfirm from "../components/DeleteConfirm";
@@ -14,29 +15,24 @@ import { handleError } from "../utils/handleError";
 
 export default function Habits() {
   const [filters, setFilters] = useState({ status: 'all', sortBy: 'default' });
-  const { habits, isLoading, error, fetchHabits, createHabit, updateHabit, deleteHabit, toggleCompletion } =
-    useHabits(filters);
+  const { habits, isLoading, error, fetchHabits, createHabit, updateHabit, deleteHabit, toggleCompletion } = useHabits(filters);
   const { notes, isLoading: notesLoading, createNote, deleteNote } = useNotes();
   const { toasts, addToast, removeToast } = useToast();
+  const { isDarkMode } = useTheme();
 
   const [modalHabit, setModalHabit] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  function openCreate() {
-    setModalHabit(null);
-    setShowModal(true);
-  }
+  const cardBg = isDarkMode ? '#1a1a2e' : 'white';
+  const cardBorder = isDarkMode ? '#2d2d4e' : '#e5e7eb';
+  const headingColor = isDarkMode ? '#e2e8f0' : '#1e293b';
+  const subColor = isDarkMode ? '#64748b' : '#9ca3af';
+  const textColor = isDarkMode ? '#94a3b8' : '#6b7280';
 
-  function openEdit(habit) {
-    setModalHabit(habit);
-    setShowModal(true);
-  }
-
-  function closeModal() {
-    setShowModal(false);
-    setModalHabit(null);
-  }
+  function openCreate() { setModalHabit(null); setShowModal(true); }
+  function openEdit(habit) { setModalHabit(habit); setShowModal(true); }
+  function closeModal() { setShowModal(false); setModalHabit(null); }
 
   async function handleSave(data) {
     try {
@@ -78,8 +74,8 @@ export default function Habits() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-surface-800">My Habits</h1>
-          <p className="mt-1 text-[13px] text-surface-400">
+          <h1 style={{ color: headingColor }} className="text-xl font-bold">My Habits</h1>
+          <p style={{ color: subColor }} className="mt-1 text-[13px]">
             {habits.length} habit{habits.length !== 1 ? "s" : ""} tracked
           </p>
         </div>
@@ -95,7 +91,7 @@ export default function Habits() {
       </div>
 
       {error ? (
-        <div className="mb-4 rounded-2xl border border-danger-400/20 bg-white">
+        <div style={{ backgroundColor: cardBg, border: `1px solid ${cardBorder}` }} className="mb-4 rounded-2xl">
           <ErrorMessage
             title="Failed to load habits"
             description="Check your connection or try refreshing your habits."
@@ -107,12 +103,8 @@ export default function Habits() {
 
       <div className="flex gap-5">
         <div className="min-w-0 flex-[7]">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="h-7 w-7 animate-spin rounded-full border-[3px] border-accent-200 border-t-accent-500" />
-            </div>
-          ) : habits.length === 0 && filters.status === 'all' && filters.sortBy === 'default' ? (
-            <div className="rounded-2xl border border-surface-200 bg-white">
+          {habits.length === 0 && filters.status === 'all' && filters.sortBy === 'default' ? (
+            <div style={{ backgroundColor: cardBg, border: `1px solid ${cardBorder}` }} className="rounded-2xl">
               <EmptyState
                 icon="habits"
                 title="No habits yet"
@@ -125,11 +117,11 @@ export default function Habits() {
             <>
               <HabitFilterBar filters={filters} onChange={setFilters} />
               {habits.length === 0 ? (
-                <div className="rounded-2xl border border-surface-200 bg-white">
+                <div style={{ backgroundColor: cardBg, border: `1px solid ${cardBorder}` }} className="rounded-2xl">
                   <EmptyState
                     icon="search"
                     title="No habits match this filter"
-                    description={`Try adjusting your filters or ${filters.status !== 'all' ? 'clearing them' : 'create a new habit'}.`}
+                    description="Try adjusting your filters."
                     actionLabel="Clear filters"
                     onAction={() => setFilters({ status: 'all', sortBy: 'default' })}
                   />
@@ -137,11 +129,11 @@ export default function Habits() {
               ) : (
                 <>
                   <div className="mb-4 flex items-center justify-between">
-                    <span className="text-xs text-gray-500 font-medium">
-                      Showing <span className="text-gray-700 font-semibold">{habits.length}</span> {habits.length === 1 ? 'habit' : 'habits'}
+                    <span style={{ color: textColor }} className="text-xs font-medium">
+                      Showing <span style={{ color: headingColor }} className="font-semibold">{habits.length}</span> {habits.length === 1 ? 'habit' : 'habits'}
                     </span>
                   </div>
-                  <div className="grid gap-3 transition-all duration-300">
+                  <div className="grid gap-3">
                     {habits.map((h) => (
                       <HabitCard
                         key={h._id}

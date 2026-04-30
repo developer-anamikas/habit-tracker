@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard", icon: DashboardIcon },
@@ -9,15 +10,20 @@ const NAV_ITEMS = [
 ];
 
 export default function Sidebar() {
+  const { isDarkMode } = useTheme();
+
   return (
-    <aside className="fixed left-0 top-0 bottom-0 w-[220px] bg-white border-r border-surface-200 flex flex-col z-20">
+    <aside style={{
+      backgroundColor: isDarkMode ? '#0f0f1a' : 'white',
+      borderRight: `1px solid ${isDarkMode ? '#2d2d4e' : '#e5e7eb'}`,
+    }} className="fixed left-0 top-0 bottom-0 w-[220px] flex flex-col z-20">
       <div className="px-5 py-5 flex items-center gap-2.5">
         <div className="w-8 h-8 rounded-lg bg-accent-500 flex items-center justify-center">
           <svg className="w-4.5 h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
           </svg>
         </div>
-        <span className="text-[15px] font-bold text-surface-800 tracking-tight">Habitly</span>
+        <span style={{ color: isDarkMode ? '#e2e8f0' : '#1e293b' }} className="text-[15px] font-bold tracking-tight">Habitly</span>
       </div>
 
       <nav className="flex-1 px-3 mt-2">
@@ -29,6 +35,8 @@ export default function Sidebar() {
               `flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-colors mb-0.5 ${
                 isActive
                   ? "bg-accent-50 text-accent-600"
+                  : isDarkMode
+                  ? "text-slate-400 hover:text-slate-200 hover:bg-white/10"
                   : "text-surface-500 hover:text-surface-700 hover:bg-surface-100"
               }`
             }
@@ -39,8 +47,8 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      <div className="px-5 py-4 border-t border-surface-200">
-        <p className="text-[11px] text-surface-400">© 2026 Habitly</p>
+      <div style={{ borderTop: `1px solid ${isDarkMode ? '#2d2d4e' : '#e5e7eb'}` }} className="px-5 py-4">
+        <p style={{ color: isDarkMode ? '#475569' : '#9ca3af' }} className="text-[11px]">© 2026 Habitly</p>
       </div>
     </aside>
   );
