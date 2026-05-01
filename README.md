@@ -50,7 +50,7 @@ Features planned for the app are listed below; check boxes track progress.
 
 ### 🎨 Optional Enhancements
 
-- [ ] Dark / Light mode
+- [x] Dark / Light mode
 - [x] Filter habits
 - [x] Sort habits
 - [x] Dashboard summary
